@@ -1,18 +1,7 @@
 {
-  "version": 2,
   "functions": {
     "api/prefilled-keys.js": {
-      "runtime": "nodejs18.x"
+      "runtime": "@vercel/node"
     }
-  },
-  "routes": [
-    {
-      "src": "/api/prefilled-keys",
-      "dest": "/api/prefilled-keys.js"
-    },
-    {
-      "src": "/api/prefilled-keys/(.*)",
-      "dest": "/api/prefilled-keys.js"
-    }
-  ]
+  }
 }
