@@ -1,7 +1,9 @@
 {
+  "version": 2,
   "functions": {
-    "api/prefilled-keys.js": {
-      "runtime": "@vercel/node"
+    "api/**/*.js": {
+      "memory": 1024,                 
+      "maxDuration": 10
     }
   }
 }

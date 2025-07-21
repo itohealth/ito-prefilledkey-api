@@ -1,46 +1,35 @@
 import Airtable from 'airtable';
 
-const base = new Airtable({ apiKey: process.env.AIRTABLE_TOKEN }).base(process.env.AIRTABLE_BASE_ID);
-const table = process.env.AIRTABLE_TABLE_NAME || 'PrefilledKeys';
 
 export default async function handler(req, res) {
-  // Add CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  
-  // Handle preflight requests
+
+  console.log({
+    AIRTABLE_PAT: !!process.env.AIRTABLE_PAT,
+    AIRTABLE_BASE: process.env.AIRTABLE_BASE,
+    AIRTABLE_TABLE: process.env.AIRTABLE_TABLE,
+  });
+
   if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
+    return res.status(204).end();
   }
 
-  const keys = new Set();
-
   try {
-    // Check for required environment variables
-    if (!process.env.AIRTABLE_TOKEN || !process.env.AIRTABLE_BASE_ID) {
-      return res.status(500).json({ 
-        error: 'Missing required environment variables: AIRTABLE_TOKEN or AIRTABLE_BASE_ID' 
-      });
-    }
+    const { AIRTABLE_PAT, AIRTABLE_BASE, AIRTABLE_TABLE } = process.env;
+    if (!AIRTABLE_PAT) throw new Error('Missing env vars');
 
-    await base(table)
-      .select()
-      .eachPage((records, fetchNextPage) => {
-        records.forEach((r) => {
-          const key = r.get('Key');
-          if (key) keys.add(key);
-        });
-        fetchNextPage();
-      });
+    const base = new Airtable({ apiKey: AIRTABLE_PAT }).base(AIRTABLE_BASE);
+    const records = await base(AIRTABLE_TABLE)
+      .select({ fields: ['key'] })
+      .all();
 
-    res.status(200).json({ keys: Array.from(keys) });
+    res
+      .setHeader('Access-Control-Allow-Origin', '*')
+      .status(200)
+      .json({ keys: records.map(r => r.get('key')).filter(Boolean) });
   } catch (err) {
-    console.error('Airtable error:', err);
-    res.status(500).json({ 
-      error: 'Failed to fetch from Airtable',
-      details: err.message 
-    });
+    console.error(err);
+    res.status(500).json({ error: err.message });
   }
 }
