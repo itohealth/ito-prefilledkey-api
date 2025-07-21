@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "functions": {
+    "api/prefilled-keys.js": {
+      "runtime": "nodejs18.x"
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/prefilled-keys",
+      "dest": "/api/prefilled-keys.js"
+    }
+  ]
+}
