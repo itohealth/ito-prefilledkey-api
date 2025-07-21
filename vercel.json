@@ -9,6 +9,10 @@
     {
       "src": "/api/prefilled-keys",
       "dest": "/api/prefilled-keys.js"
+    },
+    {
+      "src": "/api/prefilled-keys/(.*)",
+      "dest": "/api/prefilled-keys.js"
     }
   ]
 }
