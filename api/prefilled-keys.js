@@ -27,7 +27,7 @@ export default async function handler(req, res) {
     res
       .setHeader('Access-Control-Allow-Origin', '*')
       .status(200)
-      .json({ keys: records.map(r => r.get('key')).filter(Boolean) });
+      .json({ keys: records.map(r => r.get('Key')).filter(Boolean) });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });
