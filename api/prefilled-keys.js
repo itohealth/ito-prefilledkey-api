@@ -21,7 +21,7 @@ export default async function handler(req, res) {
 
     const base = new Airtable({ apiKey: AIRTABLE_PAT }).base(AIRTABLE_BASE);
     const records = await base(AIRTABLE_TABLE)
-      .select({ fields: ['key'] })
+      .select({ fields: ['Key'] })
       .all();
 
     res
